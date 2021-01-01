@@ -31,6 +31,15 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="defines.h" />
+		<Unit filename="fileControl.h" />
+		<Unit filename="fileExist.h" />
+		<Unit filename="fileReadString.h" />
+		<Unit filename="fileWRCsv.cpp" />
+		<Unit filename="fileWriteString.h" />
+		<Unit filename="getFileName.h" />
+		<Unit filename="getNameExt.h" />
+		<Unit filename="includes.h" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
