@@ -1,26 +1,23 @@
 #ifndef FILECONTROL_GETFILENAME
 #define FILECONTROL_GETFILENAME
 #include "fileControl.h"
- mystr c_FileControl::getFileName(const mystr name,const int ind=0){
-   c_StringFunctions strF;
-   const int size=strF.getStringLen(name);
-   if(size<1)return NULL;
-   mystr base=NULL;
-   mystr ext=NULL;
-   if(!getNameExt(&base,&ext,name))return NULL;
-   mystr ret=NULL;
-   strF.strAdd(&ret,base);
-   if(ind>0){
-    strF.strAdd(&ret,(mystr)"(");
-    strF.strAdd(&ret,strF.integer2String(ind));
-    strF.strAdd(&ret,(mystr)")");
+ mystr c_FileControl::getFileName(const mystr fileName,const int fileIndex=0){
+   mystr fileNameBase=NULL;
+   mystr fileNameExtension=NULL;
+   mystr returnName=NULL;
+   if(!getNameExt(&fileNameBase,&fileNameExtension,fileName))return NULL;
+   m_StrF.strAdd(&returnName,fileNameBase);
+   if(fileIndex>0){
+    m_StrF.strAdd(&returnName,(mystr)"(",1);
+    m_StrF.strAdd(&returnName,m_StrF.integer2String(fileIndex));
+    m_StrF.strAdd(&returnName,(mystr)")",1);
    }
-   if(ext!=NULL){
-    strF.strAdd(&ret,ext);
+   if(fileNameExtension!=NULL){
+    m_StrF.strAdd(&returnName,fileNameExtension);
    }
-   free(ext);
-   free(base);
-   return ret;
+   m_StrF.freeStr(&fileNameBase);
+   m_StrF.freeStr(&fileNameExtension);
+   return returnName;
   };
 
 #endif

@@ -1,35 +1,38 @@
 #ifndef FILECONTROL_FILEWRITESTRING
 #define FILECONTROL_FILEWRITESTRING
 
-ENUM_FILECONTROL_ERRO c_FileControl::fileWriteString(const mystr fname,const mystr data,const ENUM_FILECONTROL_WRITEMODE wMode){
- c_StringFunctions strC;
+ENUM_FILECONTROL_ERRO c_FileControl::fileWriteString(const mystr fileName,
+                                                     const mystr writeData,
+                                                     const ENUM_FILECONTROL_WRITEMODE writeMode){
+ if(m_StrF.getStringLen(writeData)<1)return FILECONTROL_ERRO_NODATA;
  mystr writeFileName=NULL;
- switch(wMode){
+ switch(writeMode){
   case FILECONTROL_WRITEMODE_REWRITE:
-   writeFileName=getFileName(fname,0);
+   writeFileName=getFileName(fileName,0);
    break;
   case FILECONTROL_WRITEMODE_NEWFILE:
    for(int i=0;i<FILECONTROL_MAXEQUALFILENAME;i++){
-    writeFileName=getFileName(fname,i);
+    writeFileName=getFileName(fileName,i);
     if(!fileExist(writeFileName))break;
-    free(writeFileName);
-    writeFileName=NULL;
+    m_StrF.freeStr(&writeFileName);
    }
    break;
   default:
     return FILECONTROL_ERRO_INVALIDWRITEMODE;
  };
  if(writeFileName==NULL)return FILECONTROL_ERRO_FILENAMEERRO;
- if(strC.getStringLen(data)<1)return FILECONTROL_ERRO_NODATA;
- FILE *fileH=fopen(writeFileName,FILECONTROL_WRITE);
- if(fileH==NULL)return FILECONTROL_ERRO_OPENFILEERRO;
- if(fputs((char*)data,fileH)==EOF){
-    fclose(fileH);
-    remove(writeFileName);
-    return FILECONTROL_ERRO_WRITEFILEERRO;
+ FILE *fileHandle=fopen(writeFileName,FILECONTROL_WRITE);
+ m_StrF.freeStr(&writeFileName);
+ if(fileHandle==NULL){
+    return FILECONTROL_ERRO_OPENFILEERRO;
  }
- fclose(fileH);
- return FILECONTROL_ERRO_NOERRO;
+ int fPutsResult=fputs((char*)writeData,fileHandle);
+ fclose(fileHandle);
+ if(fPutsResult==EOF){
+    return FILECONTROL_ERRO_WRITEFILEERRO;
+ }else{
+    return FILECONTROL_ERRO_NOERRO;
+ }
 };
 
 #endif

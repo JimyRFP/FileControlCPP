@@ -1,18 +1,17 @@
 #ifndef FILECONTROL_FILEREADSTRING
 #define FILECONTROL_FILEREADSTRING
 #include<stdio.h>
-ENUM_FILECONTROL_ERRO c_FileControl::fileReadString(const mystr name,mystr *data){
- FILE *fHandle=fopen(name,FILECONTROL_READ);
- if(fHandle==NULL)return FILECONTROL_ERRO_OPENFILEERRO;
- c_StringFunctions strF;
- mystr read=NULL;
- char fChar=fgetc(fHandle);
+ENUM_FILECONTROL_ERRO c_FileControl::fileReadString(const mystr fileName,mystr *returnData){
+ FILE *fileHandle=fopen(fileName,FILECONTROL_READ);
+ if(fileHandle==NULL)return FILECONTROL_ERRO_OPENFILEERRO;
+ mystr readData=NULL;
+ char fChar=fgetc(fileHandle);
  while(fChar!=EOF){
- strF.strAdd(&read,&fChar,0,1);
- fChar=fgetc(fHandle);
+ m_StrF.strAdd(&readData,(const mystr)&fChar,1);
+ fChar=fgetc(fileHandle);
  }
- *data=read;
- fclose(fHandle);
+ *returnData=readData;
+ fclose(fileHandle);
  return FILECONTROL_ERRO_NOERRO;
 };
 

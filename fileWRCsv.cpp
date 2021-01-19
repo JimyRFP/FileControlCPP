@@ -3,24 +3,25 @@
 #include "defines.h"
 #include "includes.h"
 
-ENUM_FILECONTROL_ERRO c_FileControl::fileReadCsv(const mystr fname,const char itemLineBreak,const char lineBreak,csvInfo **ret){
- mystr data;
- ENUM_FILECONTROL_ERRO erro=fileReadString((mystr)fname,&data);
- if(erro!=FILECONTROL_ERRO_NOERRO)return erro;
- *ret=m_StrF.strToCsvStruct(data,itemLineBreak,lineBreak);
+ENUM_FILECONTROL_ERRO c_FileControl::fileReadCsv(const mystr fileName,const char itemLineBreak,const char lineBreak,csvInfo **csvInfoReturn){
+ mystr readData=NULL;
+ ENUM_FILECONTROL_ERRO readFileErro=fileReadString((mystr)fileName,&readData);
+ if(readData==NULL)return readFileErro;
+ *csvInfoReturn=m_StrF.strToCsvStruct(readData,itemLineBreak,lineBreak);
+ m_StrF.freeStr(&readData);
  return FILECONTROL_ERRO_NOERRO;
 };
 
-ENUM_FILECONTROL_ERRO c_FileControl::fileWriteCsv(const mystr fname,
-                                                const ENUM_FILECONTROL_WRITEMODE wm,
-                                                const csvInfo*info,
+ENUM_FILECONTROL_ERRO c_FileControl::fileWriteCsv(const mystr fileName,
+                                                const ENUM_FILECONTROL_WRITEMODE writeMode,
+                                                const csvInfo*csvInfoSource,
                                                 const char itemLineBreak,
                                                 const char lineBreak
                                                 ){
-  mystr data=m_StrF.csvStructToStr(info,itemLineBreak,lineBreak);
-  if(data==NULL)return FILECONTROL_ERRO_CONVERTCSVERRO;
-  ENUM_FILECONTROL_ERRO erro=fileWriteString(fname,data,wm);
-  free(data);
+  mystr csvStr=m_StrF.csvStructToStr(csvInfoSource,itemLineBreak,lineBreak);
+  if(csvStr==NULL)return FILECONTROL_ERRO_CONVERTCSVERRO;
+  ENUM_FILECONTROL_ERRO erro=fileWriteString(fileName,csvStr,writeMode);
+  m_StrF.freeStr(&csvStr);
   return erro;
 }
 
